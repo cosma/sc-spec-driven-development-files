@@ -1,22 +1,48 @@
 # AgentClinic Roadmap
 
-## Phase 1: MVP - Core Booking System (Weeks 1-2)
+## Phase 1: MVP - Core Booking System ✅ COMPLETE
 **Goal**: Agents can browse therapies and book appointments
 
+**Status**: COMPLETE (Completed on 2026-08-20)
+
 ### Deliverables
-- [ ] Database schema: Agents, Therapies, Appointments, Ailments
-- [ ] API endpoints:
-  - `GET /therapies` - list available treatments
-  - `GET /ailments` - list agent ailments/issues
-  - `POST /appointments` - book an appointment
-  - `GET /agents/:id/appointments` - view agent's bookings
-- [ ] Basic dashboard: Agent profile + therapy browser + booking form
-- [ ] Simple authentication (agents can log in)
+- [x] Database schema: Agents, Therapies, Appointments, Ailments
+  - SQLite3 database with 5 tables
+  - Support for many-to-many therapy-ailment relationships
+  - Automatic table creation on server startup
+  - Sample data seeding script
+- [x] API endpoints:
+  - `GET /therapies` - list available treatments (with ailment filtering)
+  - `GET /ailments` - list agent ailments/issues (with category filtering)
+  - `POST /appointments` - book an appointment (authenticated)
+  - `GET /appointments` - view agent's appointments (authenticated)
+  - `POST /auth/register` - agent registration with password hashing
+  - `POST /auth/login` - agent authentication with JWT tokens
+- [x] Basic dashboard: Agent profile + therapy browser + booking form
+  - Tabbed interface for Profile, Therapies, Appointments
+  - Therapy browser with search and filtering
+  - Modal-based appointment booking form
+  - Appointment history with status tracking
+  - Responsive design with mobile support
+- [x] Simple authentication (agents can log in)
+  - User registration with email validation
+  - Login with email/password
+  - JWT token-based authentication (7-day expiry)
+  - Password hashing with bcryptjs (10 salt rounds)
+  - Protected API endpoints
 
 ### Success Criteria
-- Agents can view available therapies (sorted by ailment category)
-- Agents can book appointments for specific therapies
-- Bookings appear in agent's appointment list
+- [x] Agents can view available therapies (sorted by ailment category)
+- [x] Agents can book appointments for specific therapies
+- [x] Bookings appear in agent's appointment list
+
+### Implementation Details
+- **Backend**: Express.js with SQLite3 database
+- **Frontend**: HTML5, Tailwind CSS, Vanilla JavaScript
+- **Authentication**: JWT tokens with 7-day expiry
+- **Styling**: Modular CSS component system with variables
+- **Components**: Separate header, footer, main, utilities modules
+- **Documentation**: Comprehensive API docs and setup guide
 
 ---
 
