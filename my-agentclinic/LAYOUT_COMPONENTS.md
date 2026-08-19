@@ -6,8 +6,14 @@ AgentClinic uses a reusable component system for consistent layouts across all p
 
 ## Files
 
+### Shared Styles
 - **`styles.css`** - Shared CSS styles for all components and pages
-- **`layout.js`** - JavaScript component library with header, footer, and utility functions
+
+### Component Files
+- **`components/header.js`** - Header component with navigation and branding
+- **`components/footer.js`** - Footer component with links and copyright
+- **`components/main.js`** - Main content wrapper component
+- **`components/utils.js`** - Utility functions and layout initialization
 
 ## CSS System
 
@@ -88,10 +94,41 @@ The CSS uses CSS custom properties (variables) for consistent theming:
 
 ## JavaScript Components
 
-### `layout.js` Functions
+### `components/header.js`
+
+#### `createHeader(options)`
+Creates the header element with navigation and branding.
+
+**Options:**
+```javascript
+{
+  isAuthenticated: false,  // boolean
+  userName: '',           // string
+  page: ''               // string (for active nav highlighting)
+}
+```
+
+### `components/footer.js`
+
+#### `createFooter()`
+Creates the footer element with links and copyright.
+
+### `components/main.js`
+
+#### `createMain(content)`
+Creates the main content wrapper element.
+
+**Parameters:**
+```javascript
+{
+  content: ''  // string (optional HTML content)
+}
+```
+
+### `components/utils.js`
 
 #### `initializeLayout(options)`
-Main initialization function that sets up header, footer, and authentication state.
+Main initialization function that sets up header, footer, and authentication state. Combines all component files.
 
 **Options:**
 ```javascript
@@ -112,12 +149,6 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 ```
-
-#### `createHeader(options)`
-Creates the header element independently.
-
-#### `createFooter()`
-Creates the footer element independently.
 
 #### `checkAuthStatus()`
 Returns authentication state from localStorage.
@@ -160,7 +191,11 @@ Creates a form group with label and input.
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <script src="layout.js"></script>
+  <!-- Import component files -->
+  <script src="components/header.js"></script>
+  <script src="components/footer.js"></script>
+  <script src="components/main.js"></script>
+  <script src="components/utils.js"></script>
   
   <main class="app-main">
     <!-- Page content here -->
