@@ -33,7 +33,16 @@ Build the foundation of AgentClinic: a booking system where agents can browse th
 5. Add input validation and error responses for all endpoints
 6. Write Jest unit tests for each endpoint
 
-## Task Group 4: Agent Dashboard Frontend
+## Task Group 4: Home Page Frontend
+1. Create landing/home page for unauthenticated visitors
+2. Display AgentClinic branding and mission statement
+3. Show overview of available therapies (featured list or count)
+4. Show overview of available ailments (featured categories)
+5. Add prominent "Sign In" and "Register" call-to-action buttons
+6. Link to information about the platform (benefits, how it works)
+7. Style with TailwindCSS for professional, welcoming appearance
+
+## Task Group 5: Agent Dashboard Frontend
 1. Create base HTML/EJS templates with TailwindCSS
 2. Build agent profile view (showing agent info and wellness status placeholder)
 3. Build therapy browser:
@@ -46,19 +55,21 @@ Build the foundation of AgentClinic: a booking system where agents can browse th
 5. Build appointment history view (list agent's booked appointments)
 6. Implement simple session management for logged-in agents
 
-## Task Group 5: Authentication & Security
+## Task Group 6: Authentication & Security
 1. Implement agent login endpoint (`POST /auth/login`)
-2. Add session/token management (simple JWT or session-based)
-3. Add middleware to protect agent routes (require valid session)
-4. Add middleware to protect staff routes (basic role check)
-5. Add input sanitization for user inputs
+2. Implement agent registration endpoint (`POST /auth/register`)
+3. Add session/token management (simple JWT or session-based)
+4. Add middleware to protect agent routes (require valid session)
+5. Add middleware to protect staff routes (basic role check)
+6. Add input sanitization for user inputs
 
-## Task Group 6: Testing & Documentation
+## Task Group 7: Testing & Documentation
 1. Write integration tests covering the happy path:
-   - Agent logs in
-   - Browses therapies
-   - Books an appointment
-   - Views booked appointments
+   - Agent visits home page
+   - Agent registers and logs in
+   - Agent browses therapies
+   - Agent books an appointment
+   - Agent views booked appointments
 2. Document API endpoints with request/response examples
 3. Create setup guide for running the project locally
 
@@ -67,6 +78,7 @@ Build the foundation of AgentClinic: a booking system where agents can browse th
 ## Dependencies & Milestones
 - **After Task Group 1-2**: Database and server running locally
 - **After Task Group 3**: API endpoints testable via Postman/curl
-- **After Task Group 4**: Frontend can interact with API
-- **After Task Group 5**: System requires authentication to use
-- **After Task Group 6**: System is documented and tested; ready for Phase 2
+- **After Task Group 4**: Public-facing home page live; no auth required
+- **After Task Group 5**: Authenticated dashboard can interact with API
+- **After Task Group 6**: System requires authentication to use protected features
+- **After Task Group 7**: System is documented and tested; ready for Phase 2

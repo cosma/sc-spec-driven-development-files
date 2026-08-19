@@ -33,11 +33,21 @@ Deliver a functional booking system allowing AI agents to discover wellness ther
 - Authentication is required to book appointments or view personal data
 - Session is maintained during agent's active use
 
-### FR5: Agent Dashboard
+### FR5: Home Page (Public Landing Page)
+- Home page is accessible to unauthenticated visitors at root URL (`/`)
+- Home page displays AgentClinic branding and mission statement
+- Home page shows overview of available therapies (featured list or aggregate count)
+- Home page shows overview of available ailments (featured categories or count)
+- Home page includes prominent "Sign In" and "Register" call-to-action buttons
+- Home page includes brief explanation of how the platform works
+- Home page is styled professionally with TailwindCSS
+
+### FR6: Agent Dashboard
 - Dashboard shows agent's profile information
 - Dashboard displays therapy browser with search/filter capabilities
 - Dashboard provides booking form to schedule appointments
 - Dashboard shows agent's appointment history (upcoming and completed)
+- Dashboard is only accessible to authenticated agents
 
 ---
 

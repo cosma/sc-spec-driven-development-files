@@ -30,61 +30,90 @@ Phase 1 is complete and ready to merge when all acceptance criteria are met and 
 - [ ] Unauthenticated requests return 401 Unauthorized
 - [ ] Auth token expires or can be revoked
 
-### AC4: Frontend Dashboard
-- [ ] Dashboard accessible at `/` or `/dashboard` after login
+### AC4: Home Page (Public Landing Page)
+- [ ] Home page accessible at `/` to unauthenticated users
+- [ ] Page displays AgentClinic branding and mission
+- [ ] Page shows overview of therapies (list or count of available treatments)
+- [ ] Page shows overview of ailments (list or count of categories)
+- [ ] Page includes prominent "Sign In" link/button
+- [ ] Page includes prominent "Register" link/button
+- [ ] Page includes brief explanation of platform benefits or how it works
+- [ ] UI is styled with TailwindCSS and is visually coherent and welcoming
+
+### AC5: Frontend Dashboard
+- [ ] Dashboard accessible at `/dashboard` after login
 - [ ] Agent profile section shows agent name and email
 - [ ] Therapy browser displays list of therapies with search/filter by ailment
 - [ ] Booking form allows selecting therapy and appointment time
 - [ ] Appointment history shows agent's upcoming and past appointments
 - [ ] UI is styled with TailwindCSS and is visually coherent
+- [ ] Unauthenticated users redirected away from dashboard to home/login
 
-### AC5: End-to-End Workflow
+### AC6: End-to-End Workflow
 Test the complete user journey:
-1. [ ] Agent can register/create account
-2. [ ] Agent can log in
-3. [ ] Agent can browse therapies (list view)
-4. [ ] Agent can filter therapies by ailment category
-5. [ ] Agent can select a therapy and book an appointment
-6. [ ] Agent receives confirmation of booking
-7. [ ] Agent can view their bookings in appointment history
-8. [ ] Agent can log out and cannot access protected features
+1. [ ] Unauthenticated visitor can access home page at `/`
+2. [ ] Home page displays therapies and ailments overview
+3. [ ] Home page has clickable "Register" button that goes to registration page
+4. [ ] Agent can navigate to registration and create account
+5. [ ] Agent can log in with credentials
+6. [ ] Agent redirected to dashboard after login
+7. [ ] Agent can browse therapies in dashboard (list view)
+8. [ ] Agent can filter therapies by ailment category
+9. [ ] Agent can select a therapy and book an appointment
+10. [ ] Agent receives confirmation of booking
+11. [ ] Agent can view their bookings in appointment history
+12. [ ] Agent can log out and is redirected to home page
+13. [ ] After logout, agent cannot access dashboard
 
-### AC6: Code Quality
+### AC7: Code Quality
 - [ ] All TypeScript compiles with `tsc` in strict mode (zero errors)
 - [ ] ESLint passes with no warnings (or documented exceptions)
 - [ ] Prettier formatting is consistent across all files
 - [ ] No hardcoded secrets or credentials in code
 - [ ] Environment variables documented in `.env.example`
 
-### AC7: Testing
+### AC8: Testing
 - [ ] Unit tests cover API endpoints (GET/POST logic)
-- [ ] Integration tests cover happy-path workflows
+- [ ] Integration tests cover happy-path workflows (including home page, registration, login, booking)
 - [ ] Test suite runs with `npm test` and passes
-- [ ] Code coverage ≥70% for critical paths (auth, booking, listing)
+- [ ] Code coverage ≥70% for critical paths (auth, booking, listing, home page)
 
-### AC8: Documentation
+### AC9: Documentation
 - [ ] README.md explains how to set up and run the project
 - [ ] API documentation (Postman collection or OpenAPI spec) included
 - [ ] Database schema diagram or explanation provided
 - [ ] `.env.example` shows required environment variables
+- [ ] Architecture overview mentions home page as public entry point
 
 ---
 
 ## Testing Scenarios
 
-### Scenario 1: Agent Booking Workflow (Happy Path)
+### Scenario 1: Public Home Page Discovery (Unauthenticated User)
 **Setup**: Fresh database with 5 ailments and 10 therapies
 **Steps**:
-1. Agent visits `/register` and signs up (email, password, name)
-2. Agent logs in with credentials
-3. Agent navigates to therapy browser
-4. Agent filters therapies by "Stress Management" ailment (3+ results returned)
-5. Agent selects "Meditation Session" therapy and books for tomorrow at 2 PM
-6. System confirms appointment and redirects to appointment history
-7. Appointment appears in agent's history with correct details
-**Expected Result**: Appointment recorded in database; agent can view it
+1. Visitor navigates to `/` (home page)
+2. Home page loads and displays AgentClinic branding
+3. Visitor sees overview of therapies and ailments
+4. Visitor sees "Sign In" and "Register" buttons
+5. Visitor clicks "Register" button and is taken to registration page
+**Expected Result**: Home page serves as welcoming entry point; navigation works correctly
 
-### Scenario 2: Authentication & Authorization
+### Scenario 2: Agent Booking Workflow (Happy Path)
+**Setup**: Fresh database with 5 ailments and 10 therapies; home page accessible
+**Steps**:
+1. Agent visits home page (`/`)
+2. Agent clicks "Register" button
+3. Agent signs up with email, password, and name
+4. System logs agent in and redirects to dashboard
+5. Agent navigates to therapy browser
+6. Agent filters therapies by "Stress Management" ailment (3+ results returned)
+7. Agent selects "Meditation Session" therapy and books for tomorrow at 2 PM
+8. System confirms appointment and redirects to appointment history
+9. Appointment appears in agent's history with correct details
+**Expected Result**: Complete journey from home → registration → dashboard → booking works seamlessly
+
+### Scenario 3: Authentication & Authorization
 **Setup**: Two agents (Agent A and Agent B) logged in
 **Steps**:
 1. Agent A books an appointment
@@ -92,16 +121,16 @@ Test the complete user journey:
 3. System rejects request or returns only B's appointments
 **Expected Result**: Agents cannot access other agents' data
 
-### Scenario 3: Filter & Search
-**Setup**: Database has therapies for multiple ailments
+### Scenario 4: Filter & Search
+**Setup**: Database has therapies for multiple ailments; agent is logged in
 **Steps**:
-1. Agent views therapy list (10+ therapies shown)
+1. Agent views therapy list in dashboard (10+ therapies shown)
 2. Agent filters by "Burnout Recovery" ailment
 3. Only therapies tagged for burnout are shown (≥2, ≤5)
 4. Agent clears filter and sees full list again
 **Expected Result**: Filter correctly narrows results
 
-### Scenario 4: Error Handling
+### Scenario 5: Error Handling
 **Steps**:
 1. Agent tries to book appointment with invalid/missing data
 2. Agent tries to access protected endpoint without authentication
