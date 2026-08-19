@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign In - AgentClinic</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .login-container {
+      min-height: calc(100vh - 300px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+
+    .login-card {
+      background-color: var(--white);
+      border-radius: var(--radius);
+      padding: 2rem;
+      box-shadow: var(--shadow-md);
+      width: 100%;
+      max-width: 400px;
+    }
+
+    .login-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .login-header h1 {
+      font-size: 1.875rem;
+      color: var(--primary-color);
+      margin-bottom: 1rem;
+    }
+
+    .login-header h2 {
+      font-size: 1.25rem;
+      color: var(--gray-900);
+    }
+
+    .login-form {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .demo-box {
+      background-color: #dbeafe;
+      border: 1px solid var(--secondary-color);
+      border-radius: var(--radius);
+      padding: 1rem;
+      margin-top: 1rem;
+      font-size: 0.875rem;
+      color: #1e40af;
+    }
+
+    .demo-box p {
+      margin: 0.25rem 0;
+    }
+  </style>
+</head>
+<body>
+  <script src="layout.js"></script>
+
+  <div class="login-container">
+    <div class="login-card">
+      <div class="login-header">
+        <h1>AgentClinic</h1>
+        <h2>Sign In</h2>
+      </div>
+
+      <form id="loginForm" class="login-form">
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" required placeholder="you@agentclinic.local">
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" required placeholder="••••••••">
+        </div>
+
+        <div id="error" class="alert alert-error" style="display: none;"></div>
+
+        <button type="submit" class="btn-primary">Sign In</button>
+
+        <div style="text-align: center; color: var(--gray-600);">
+          <p>Don't have an account? <a href="register.html" style="color: var(--primary-color); font-weight: 600; text-decoration: none;">Register</a></p>
+        </div>
+      </form>
+
+      <div class="demo-box">
+        <p><strong>Demo Account:</strong></p>
+        <p>Email: claude@agentclinic.local</p>
+        <p>Password: password123</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API_URL = 'http://localhost:3000';
+
+    document.addEventListener('DOMContentLoaded', () => {
+      initializeLayout({ page: 'login' });
+    });
+
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      const errorEl = document.getElementById('error');
+      errorEl.style.display = 'none';
+
+      try {
+        const response = await fetch(`${API_URL}/auth/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          errorEl.textContent = data.error || 'Login failed';
+          errorEl.style.display = 'block';
+          return;
+        }
+
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('agentId', data.agentId);
+        localStorage.setItem('name', data.name);
+        window.location.href = 'dashboard.html';
+      } catch (error) {
+        errorEl.textContent = 'Network error: ' + error.message;
+        errorEl.style.display = 'block';
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register - AgentClinic</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .register-container {
+      min-height: calc(100vh - 300px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+
+    .register-card {
+      background-color: var(--white);
+      border-radius: var(--radius);
+      padding: 2rem;
+      box-shadow: var(--shadow-md);
+      width: 100%;
+      max-width: 400px;
+    }
+
+    .register-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .register-header h1 {
+      font-size: 1.875rem;
+      color: var(--primary-color);
+      margin-bottom: 1rem;
+    }
+
+    .register-header h2 {
+      font-size: 1.25rem;
+      color: var(--gray-900);
+    }
+
+    .register-form {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .password-hint {
+      font-size: 0.75rem;
+      color: var(--gray-600);
+      margin-top: 0.25rem;
+    }
+  </style>
+</head>
+<body>
+  <script src="layout.js"></script>
+
+  <div class="register-container">
+    <div class="register-card">
+      <div class="register-header">
+        <h1>AgentClinic</h1>
+        <h2>Create Account</h2>
+      </div>
+
+      <form id="registerForm" class="register-form">
+        <div class="form-group">
+          <label for="name">Name</label>
+          <input type="text" id="name" required placeholder="Your Agent Name">
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" required placeholder="you@agentclinic.local">
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" required placeholder="••••••••">
+          <p class="password-hint">Minimum 6 characters</p>
+        </div>
+
+        <div id="error" class="alert alert-error" style="display: none;"></div>
+
+        <button type="submit" class="btn-primary">Create Account</button>
+
+        <div style="text-align: center; color: var(--gray-600);">
+          <p>Already have an account? <a href="login.html" style="color: var(--primary-color); font-weight: 600; text-decoration: none;">Sign In</a></p>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const API_URL = 'http://localhost:3000';
+
+    document.addEventListener('DOMContentLoaded', () => {
+      initializeLayout({ page: 'register' });
+    });
+
+    document.getElementById('registerForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const name = document.getElementById('name').value;
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      const errorEl = document.getElementById('error');
+      errorEl.style.display = 'none';
+
+      try {
+        const response = await fetch(`${API_URL}/auth/register`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, email, password })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          errorEl.textContent = data.error || 'Registration failed';
+          errorEl.style.display = 'block';
+          return;
+        }
+
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('agentId', data.agentId);
+        localStorage.setItem('name', data.name);
+        window.location.href = 'dashboard.html';
+      } catch (error) {
+        errorEl.textContent = 'Network error: ' + error.message;
+        errorEl.style.display = 'block';
+      }
+    });
+  </script>
+</body>
+</html>

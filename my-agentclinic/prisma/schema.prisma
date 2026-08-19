@@ -1,0 +1,56 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Agent {
+  id        String     @id @default(cuid())
+  name      String
+  email     String     @unique
+  password  String
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  appointments Appointment[]
+}
+
+model Ailment {
+  id        String    @id @default(cuid())
+  name      String    @unique
+  description String
+  category  String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  therapies Therapy[]
+}
+
+model Therapy {
+  id        String    @id @default(cuid())
+  name      String    @unique
+  description String
+  duration  Int       // in minutes
+  staffRequired Int   @default(1)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  ailments  Ailment[]
+  appointments Appointment[]
+}
+
+model Appointment {
+  id        String    @id @default(cuid())
+  agentId   String
+  agent     Agent     @relation(fields: [agentId], references: [id], onDelete: Cascade)
+  therapyId String
+  therapy   Therapy   @relation(fields: [therapyId], references: [id])
+  scheduledAt DateTime
+  status    String    @default("scheduled") // scheduled, completed, cancelled
+  notes     String?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
