@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Staff Dashboard - AgentClinic</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    :root {
+      --sidebar-width: 250px;
+    }
+
+    body {
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .dashboard-container {
+      display: flex;
+      height: calc(100vh - 60px);
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem;
+      background: var(--form-element-background-color);
+      border-bottom: 1px solid var(--muted-border-color);
+      height: 60px;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 1.2rem;
+    }
+
+    .header-right {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
+
+    .staff-name {
+      font-size: 0.9rem;
+      color: var(--muted-color);
+    }
+
+    nav {
+      width: var(--sidebar-width);
+      background: var(--form-element-background-color);
+      border-right: 1px solid var(--muted-border-color);
+      overflow-y: auto;
+      padding: 0;
+    }
+
+    nav ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    nav li {
+      margin: 0;
+    }
+
+    nav button {
+      width: 100%;
+      text-align: left;
+      border: none;
+      background: transparent;
+      padding: 1rem;
+      cursor: pointer;
+      border-bottom: 1px solid var(--muted-border-color);
+      color: var(--muted-color);
+    }
+
+    nav button:hover {
+      background: var(--table-border-color);
+    }
+
+    nav button.active {
+      background: var(--primary-color);
+      color: white;
+    }
+
+    .main-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 2rem;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .filters {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+      background: var(--form-element-background-color);
+      padding: 1.5rem;
+      border-radius: var(--border-radius);
+    }
+
+    .appointments-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .appointments-table th {
+      background: var(--form-element-background-color);
+      padding: 1rem;
+      text-align: left;
+      border-bottom: 2px solid var(--muted-border-color);
+    }
+
+    .appointments-table td {
+      padding: 1rem;
+      border-bottom: 1px solid var(--muted-border-color);
+    }
+
+    .appointments-table tr:hover {
+      background: var(--form-element-background-color);
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 0.25rem 0.75rem;
+      border-radius: var(--border-radius);
+      font-size: 0.85rem;
+      font-weight: bold;
+    }
+
+    .status-pending {
+      background: var(--form-element-invalid-border-color);
+      color: white;
+    }
+
+    .status-confirmed {
+      background: var(--primary-color);
+      color: white;
+    }
+
+    .status-completed {
+      background: #27ae60;
+      color: white;
+    }
+
+    .status-cancelled {
+      background: #95a5a6;
+      color: white;
+    }
+
+    .agent-card {
+      background: var(--form-element-background-color);
+      padding: 1.5rem;
+      border-radius: var(--border-radius);
+      margin-bottom: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      border: 1px solid var(--muted-border-color);
+      transition: box-shadow 0.2s ease;
+    }
+
+    .agent-card:hover {
+      box-shadow: 0 0 0 3px var(--primary-focus);
+    }
+
+    .agent-info h3 {
+      margin: 0 0 0.25rem 0;
+    }
+
+    .agent-info p {
+      margin: 0;
+      font-size: 0.9rem;
+      color: var(--muted-color);
+    }
+
+    .wellness-score {
+      text-align: right;
+    }
+
+    .wellness-score .score {
+      font-size: 2rem;
+      font-weight: bold;
+      margin: 0;
+    }
+
+    .wellness-score .label {
+      font-size: 0.85rem;
+      color: var(--muted-color);
+      margin: 0;
+    }
+
+    .wellness-indicator {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      margin-right: 0.5rem;
+    }
+
+    .wellness-good { background: #27ae60; }
+    .wellness-warning { background: #f39c12; }
+    .wellness-critical { background: #e74c3c; }
+
+    .appointment-actions {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .appointment-actions button {
+      padding: 0.5rem 1rem;
+      font-size: 0.85rem;
+      margin: 0;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+    }
+
+    .modal.show {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-content {
+      background-color: var(--muted-border-color);
+      padding: 2rem;
+      border-radius: var(--border-radius);
+      max-width: 500px;
+      width: 90%;
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .modal-header h2 {
+      margin: 0;
+    }
+
+    .close-btn {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: var(--muted-color);
+      padding: 0;
+    }
+
+    .modal-body {
+      margin-bottom: 1.5rem;
+    }
+
+    .modal-body p {
+      margin: 0.5rem 0;
+    }
+
+    .modal-footer {
+      display: flex;
+      gap: 1rem;
+      justify-content: flex-end;
+    }
+
+    .modal-footer button {
+      margin: 0;
+    }
+
+    .loading-spinner {
+      text-align: center;
+      padding: 2rem;
+      color: var(--muted-color);
+    }
+
+    .error-alert {
+      background: #fadbd8;
+      border: 1px solid #e74c3c;
+      color: #c0392b;
+      padding: 1rem;
+      border-radius: var(--border-radius);
+      margin-bottom: 1rem;
+      display: none;
+    }
+
+    .error-alert.show {
+      display: block;
+    }
+
+    @media (max-width: 768px) {
+      .dashboard-container {
+        flex-direction: column;
+      }
+
+      nav {
+        width: 100%;
+        height: auto;
+        display: flex;
+        border-right: none;
+        border-bottom: 1px solid var(--muted-border-color);
+      }
+
+      nav ul {
+        display: flex;
+        gap: 0;
+      }
+
+      nav button {
+        padding: 0.75rem;
+        border-bottom: none;
+        border-right: 1px solid var(--muted-border-color);
+        flex: 1;
+      }
+
+      nav button:last-child {
+        border-right: none;
+      }
+
+      .main-content {
+        padding: 1rem;
+      }
+
+      .filters {
+        grid-template-columns: 1fr;
+      }
+
+      .agent-card {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .wellness-score {
+        text-align: left;
+        margin-top: 1rem;
+        width: 100%;
+      }
+
+      .appointments-table {
+        font-size: 0.9rem;
+      }
+
+      .appointments-table th,
+      .appointments-table td {
+        padding: 0.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>AgentClinic Staff Dashboard</h1>
+    <div class="header-right">
+      <span class="staff-name" id="staffName"></span>
+      <button onclick="logout()">Logout</button>
+    </div>
+  </header>
+
+  <div class="dashboard-container">
+    <nav>
+      <ul>
+        <li><button class="nav-btn active" data-tab="appointments">Appointments</button></li>
+        <li><button class="nav-btn" data-tab="agents">Agent Wellness</button></li>
+      </ul>
+    </nav>
+
+    <main class="main-content">
+      <!-- Appointments Tab -->
+      <div id="appointments" class="tab-content active">
+        <h2>Appointment Management</h2>
+        <div class="error-alert" id="appointmentsError"></div>
+
+        <div class="filters">
+          <input
+            type="text"
+            id="searchInput"
+            placeholder="Search agent or therapy..."
+          >
+          <select id="statusFilter">
+            <option value="">All Status</option>
+            <option value="pending">Pending</option>
+            <option value="confirmed">Confirmed</option>
+            <option value="completed">Completed</option>
+            <option value="cancelled">Cancelled</option>
+          </select>
+          <input type="date" id="startDate" placeholder="Start Date">
+          <input type="date" id="endDate" placeholder="End Date">
+          <button onclick="loadAppointments()">Filter</button>
+        </div>
+
+        <div id="appointmentsContainer">
+          <div class="loading-spinner">Loading appointments...</div>
+        </div>
+      </div>
+
+      <!-- Agent Wellness Tab -->
+      <div id="agents" class="tab-content">
+        <h2>Agent Wellness Metrics</h2>
+        <div class="error-alert" id="agentsError"></div>
+        <div id="agentsContainer">
+          <div class="loading-spinner">Loading agents...</div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Appointment Detail Modal -->
+  <div id="appointmentModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Appointment Details</h2>
+        <button class="close-btn" onclick="closeModal('appointmentModal')">×</button>
+      </div>
+      <div class="modal-body" id="appointmentDetails"></div>
+      <div class="modal-footer" id="appointmentFooter"></div>
+    </div>
+  </div>
+
+  <!-- Agent Detail Modal -->
+  <div id="agentModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Agent Details</h2>
+        <button class="close-btn" onclick="closeModal('agentModal')">×</button>
+      </div>
+      <div class="modal-body" id="agentDetails"></div>
+    </div>
+  </div>
+
+  <script>
+    const API_URL = '';
+    const STAFF_TOKEN = localStorage.getItem('staffToken');
+
+    if (!STAFF_TOKEN) {
+      window.location.href = '/staff-login.html';
+    }
+
+    document.getElementById('staffName').textContent = localStorage.getItem('staffName') || 'Staff';
+
+    // Tab navigation
+    document.querySelectorAll('.nav-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+        btn.classList.add('active');
+        const tabId = btn.getAttribute('data-tab');
+        document.getElementById(tabId).classList.add('active');
+
+        if (tabId === 'appointments') {
+          loadAppointments();
+        } else if (tabId === 'agents') {
+          loadAgents();
+        }
+      });
+    });
+
+    // Load appointments
+    async function loadAppointments() {
+      const container = document.getElementById('appointmentsContainer');
+      const errorDiv = document.getElementById('appointmentsError');
+      errorDiv.classList.remove('show');
+
+      try {
+        container.innerHTML = '<div class="loading-spinner">Loading appointments...</div>';
+
+        const search = document.getElementById('searchInput').value;
+        const status = document.getElementById('statusFilter').value;
+        const startDate = document.getElementById('startDate').value;
+        const endDate = document.getElementById('endDate').value;
+
+        const params = new URLSearchParams();
+        if (search) params.append('search', search);
+        if (status) params.append('status', status);
+        if (startDate) params.append('startDate', startDate);
+        if (endDate) params.append('endDate', endDate);
+
+        const response = await fetch(`/staff/appointments?${params}`, {
+          headers: { 'Authorization': `Bearer ${STAFF_TOKEN}` }
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to load appointments');
+        }
+
+        const appointments = await response.json();
+
+        if (appointments.length === 0) {
+          container.innerHTML = '<p style="text-align: center; color: var(--muted-color);">No appointments found</p>';
+          return;
+        }
+
+        let html = `
+          <table class="appointments-table">
+            <thead>
+              <tr>
+                <th>Agent</th>
+                <th>Therapy</th>
+                <th>Scheduled</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+        `;
+
+        appointments.forEach(apt => {
+          const date = new Date(apt.scheduledAt).toLocaleString();
+          const statusBadge = `<span class="status-badge status-${apt.status}">${apt.status}</span>`;
+          html += `
+            <tr>
+              <td>${apt.agentName}</td>
+              <td>${apt.therapyName}</td>
+              <td>${date}</td>
+              <td>${statusBadge}</td>
+              <td>
+                <button onclick="showAppointmentDetail('${apt.id}')" style="padding: 0.5rem 1rem; margin: 0;">View</button>
+              </td>
+            </tr>
+          `;
+        });
+
+        html += '</tbody></table>';
+        container.innerHTML = html;
+      } catch (error) {
+        errorDiv.textContent = error.message;
+        errorDiv.classList.add('show');
+        container.innerHTML = '';
+      }
+    }
+
+    async function showAppointmentDetail(appointmentId) {
+      try {
+        const response = await fetch(`/staff/appointments/${appointmentId}`, {
+          headers: { 'Authorization': `Bearer ${STAFF_TOKEN}` }
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to load appointment');
+        }
+
+        const apt = await response.json();
+        const date = new Date(apt.scheduledAt).toLocaleString();
+
+        const details = `
+          <p><strong>Agent:</strong> ${apt.agentName}</p>
+          <p><strong>Email:</strong> ${apt.agentEmail}</p>
+          <p><strong>Therapy:</strong> ${apt.therapyName}</p>
+          <p><strong>Duration:</strong> ${apt.duration} minutes</p>
+          <p><strong>Scheduled:</strong> ${date}</p>
+          <p><strong>Status:</strong> <span class="status-badge status-${apt.status}">${apt.status}</span></p>
+          <p><strong>Notes:</strong> ${apt.notes || 'None'}</p>
+        `;
+
+        document.getElementById('appointmentDetails').innerHTML = details;
+
+        let footer = '';
+        if (apt.status === 'pending') {
+          footer = `
+            <button onclick="updateAppointmentStatus('${apt.id}', 'confirmed')">Confirm</button>
+            <button onclick="updateAppointmentStatus('${apt.id}', 'cancelled')">Cancel</button>
+          `;
+        } else if (apt.status === 'confirmed') {
+          footer = `
+            <button onclick="updateAppointmentStatus('${apt.id}', 'completed')">Mark Completed</button>
+            <button onclick="updateAppointmentStatus('${apt.id}', 'cancelled')">Cancel</button>
+          `;
+        }
+
+        document.getElementById('appointmentFooter').innerHTML = footer;
+        document.getElementById('appointmentModal').classList.add('show');
+      } catch (error) {
+        alert('Error: ' + error.message);
+      }
+    }
+
+    async function updateAppointmentStatus(appointmentId, status) {
+      try {
+        const response = await fetch(`/appointments/${appointmentId}`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${STAFF_TOKEN}`
+          },
+          body: JSON.stringify({ status })
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to update appointment');
+        }
+
+        closeModal('appointmentModal');
+        loadAppointments();
+      } catch (error) {
+        alert('Error: ' + error.message);
+      }
+    }
+
+    // Load agents
+    async function loadAgents() {
+      const container = document.getElementById('agentsContainer');
+      const errorDiv = document.getElementById('agentsError');
+      errorDiv.classList.remove('show');
+
+      try {
+        container.innerHTML = '<div class="loading-spinner">Loading agents...</div>';
+
+        const response = await fetch('/staff/agents', {
+          headers: { 'Authorization': `Bearer ${STAFF_TOKEN}` }
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to load agents');
+        }
+
+        const agents = await response.json();
+
+        if (agents.length === 0) {
+          container.innerHTML = '<p style="text-align: center; color: var(--muted-color);">No agents found</p>';
+          return;
+        }
+
+        let html = '';
+        agents.forEach(agent => {
+          const wellnessClass = agent.wellnessScore >= 70 ? 'wellness-good' : agent.wellnessScore >= 40 ? 'wellness-warning' : 'wellness-critical';
+          const wellnessLabel = agent.wellnessScore >= 70 ? 'Good' : agent.wellnessScore >= 40 ? 'Needs Attention' : 'Critical';
+
+          html += `
+            <div class="agent-card" onclick="showAgentDetail('${agent.id}')">
+              <div class="agent-info">
+                <h3>${agent.name}</h3>
+                <p>${agent.email}</p>
+                <p><span class="wellness-indicator ${wellnessClass}"></span>${agent.totalAppointments} appointments (${agent.completedAppointments} completed)</p>
+              </div>
+              <div class="wellness-score">
+                <p class="score">${agent.wellnessScore}%</p>
+                <p class="label">Wellness Score</p>
+              </div>
+            </div>
+          `;
+        });
+
+        container.innerHTML = html;
+      } catch (error) {
+        errorDiv.textContent = error.message;
+        errorDiv.classList.add('show');
+        container.innerHTML = '';
+      }
+    }
+
+    async function showAgentDetail(agentId) {
+      try {
+        const response = await fetch(`/staff/agents/${agentId}`, {
+          headers: { 'Authorization': `Bearer ${STAFF_TOKEN}` }
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to load agent details');
+        }
+
+        const agent = await response.json();
+        const wellnessClass = agent.wellnessScore >= 70 ? 'wellness-good' : agent.wellnessScore >= 40 ? 'wellness-warning' : 'wellness-critical';
+
+        let details = `
+          <p><strong>Name:</strong> ${agent.name}</p>
+          <p><strong>Email:</strong> ${agent.email}</p>
+          <p><strong>Wellness Score:</strong> <span style="font-weight: bold;">${agent.wellnessScore}%</span> <span class="wellness-indicator ${wellnessClass}"></span></p>
+          <p><strong>Total Appointments:</strong> ${agent.totalAppointments}</p>
+          <p><strong>Completed Appointments:</strong> ${agent.completedAppointments}</p>
+          <p><strong>Member Since:</strong> ${new Date(agent.createdAt).toLocaleDateString()}</p>
+
+          <hr>
+          <h3>Recent Appointments</h3>
+        `;
+
+        if (agent.appointments && agent.appointments.length > 0) {
+          details += '<table class="appointments-table"><thead><tr><th>Therapy</th><th>Scheduled</th><th>Status</th></tr></thead><tbody>';
+          agent.appointments.slice(0, 5).forEach(apt => {
+            const date = new Date(apt.scheduledAt).toLocaleString();
+            const statusBadge = `<span class="status-badge status-${apt.status}">${apt.status}</span>`;
+            details += `<tr><td>${apt.therapyName}</td><td>${date}</td><td>${statusBadge}</td></tr>`;
+          });
+          details += '</tbody></table>';
+        } else {
+          details += '<p style="color: var(--muted-color);">No appointments yet</p>';
+        }
+
+        document.getElementById('agentDetails').innerHTML = details;
+        document.getElementById('agentModal').classList.add('show');
+      } catch (error) {
+        alert('Error: ' + error.message);
+      }
+    }
+
+    function closeModal(modalId) {
+      document.getElementById(modalId).classList.remove('show');
+    }
+
+    function logout() {
+      localStorage.removeItem('staffToken');
+      localStorage.removeItem('staffId');
+      localStorage.removeItem('staffName');
+      window.location.href = '/staff-login.html';
+    }
+
+    // Debounce utility
+    function debounce(func, delay) {
+      let timeoutId;
+      return function(...args) {
+        clearTimeout(timeoutId);
+        timeoutId = setTimeout(() => func.apply(this, args), delay);
+      };
+    }
+
+    // Load appointments on page load
+    loadAppointments();
+
+    // Add event listeners for filters
+    document.getElementById('searchInput').addEventListener('keyup', debounce(() => loadAppointments(), 500));
+    document.getElementById('statusFilter').addEventListener('change', loadAppointments);
+  </script>
+</body>
+</html>

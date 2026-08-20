@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Staff Login - AgentClinic</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      background: var(--form-element-background-color);
+    }
+    .auth-container {
+      max-width: 400px;
+      width: 100%;
+      padding: 1rem;
+    }
+    .auth-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    .auth-header h1 {
+      margin: 0 0 0.5rem 0;
+    }
+    .auth-header p {
+      color: var(--muted-color);
+      margin: 0;
+    }
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+    .error-message {
+      color: var(--form-element-invalid-border-color);
+      font-size: 0.9rem;
+      margin-top: 0.5rem;
+      display: none;
+    }
+    .error-message.show {
+      display: block;
+    }
+    button {
+      width: 100%;
+    }
+    .auth-footer {
+      text-align: center;
+      margin-top: 1.5rem;
+    }
+    .auth-footer a {
+      color: var(--primary-color);
+    }
+  </style>
+</head>
+<body>
+  <div class="auth-container">
+    <div class="auth-header">
+      <h1>AgentClinic</h1>
+      <p>Staff Portal</p>
+    </div>
+
+    <form id="loginForm">
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          placeholder="staff@agentclinic.com"
+          required
+        >
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input
+          type="password"
+          id="password"
+          name="password"
+          placeholder="Enter your password"
+          required
+        >
+      </div>
+
+      <div class="error-message" id="errorMessage"></div>
+
+      <button type="submit" aria-busy="false" id="submitBtn">
+        Sign In
+      </button>
+    </form>
+
+    <div class="auth-footer">
+      <p>Don't have an account? <a href="/staff-register.html">Register here</a></p>
+    </div>
+  </div>
+
+  <script>
+    const loginForm = document.getElementById('loginForm');
+    const errorMessage = document.getElementById('errorMessage');
+    const submitBtn = document.getElementById('submitBtn');
+
+    loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      errorMessage.classList.remove('show');
+      submitBtn.setAttribute('aria-busy', 'true');
+
+      try {
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+
+        const response = await fetch('/auth/staff-login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.error || 'Login failed');
+        }
+
+        localStorage.setItem('staffToken', data.token);
+        localStorage.setItem('staffId', data.staffId);
+        localStorage.setItem('staffName', data.name);
+
+        window.location.href = '/staff-dashboard.html';
+      } catch (error) {
+        errorMessage.textContent = error.message;
+        errorMessage.classList.add('show');
+      } finally {
+        submitBtn.setAttribute('aria-busy', 'false');
+      }
+    });
+  </script>
+</body>
+</html>

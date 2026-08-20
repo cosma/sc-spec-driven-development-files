@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Staff Registration - AgentClinic</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      background: var(--form-element-background-color);
+    }
+    .auth-container {
+      max-width: 400px;
+      width: 100%;
+      padding: 1rem;
+    }
+    .auth-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    .auth-header h1 {
+      margin: 0 0 0.5rem 0;
+    }
+    .auth-header p {
+      color: var(--muted-color);
+      margin: 0;
+    }
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+    .error-message {
+      color: var(--form-element-invalid-border-color);
+      font-size: 0.9rem;
+      margin-top: 0.5rem;
+      display: none;
+    }
+    .error-message.show {
+      display: block;
+    }
+    button {
+      width: 100%;
+    }
+    .auth-footer {
+      text-align: center;
+      margin-top: 1.5rem;
+    }
+    .auth-footer a {
+      color: var(--primary-color);
+    }
+  </style>
+</head>
+<body>
+  <div class="auth-container">
+    <div class="auth-header">
+      <h1>AgentClinic</h1>
+      <p>Staff Registration</p>
+    </div>
+
+    <form id="registerForm">
+      <div class="form-group">
+        <label for="name">Full Name</label>
+        <input
+          type="text"
+          id="name"
+          name="name"
+          placeholder="John Doe"
+          required
+        >
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          placeholder="staff@agentclinic.com"
+          required
+        >
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input
+          type="password"
+          id="password"
+          name="password"
+          placeholder="At least 6 characters"
+          required
+        >
+        <small>Password must be at least 6 characters</small>
+      </div>
+
+      <div class="error-message" id="errorMessage"></div>
+
+      <button type="submit" aria-busy="false" id="submitBtn">
+        Create Account
+      </button>
+    </form>
+
+    <div class="auth-footer">
+      <p>Already have an account? <a href="/staff-login.html">Sign in here</a></p>
+    </div>
+  </div>
+
+  <script>
+    const registerForm = document.getElementById('registerForm');
+    const errorMessage = document.getElementById('errorMessage');
+    const submitBtn = document.getElementById('submitBtn');
+
+    registerForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      errorMessage.classList.remove('show');
+      submitBtn.setAttribute('aria-busy', 'true');
+
+      try {
+        const name = document.getElementById('name').value;
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+
+        if (password.length < 6) {
+          throw new Error('Password must be at least 6 characters');
+        }
+
+        const response = await fetch('/auth/staff-register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, email, password })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.error || 'Registration failed');
+        }
+
+        localStorage.setItem('staffToken', data.token);
+        localStorage.setItem('staffId', data.staffId);
+        localStorage.setItem('staffName', data.name);
+
+        window.location.href = '/staff-dashboard.html';
+      } catch (error) {
+        errorMessage.textContent = error.message;
+        errorMessage.classList.add('show');
+      } finally {
+        submitBtn.setAttribute('aria-busy', 'false');
+      }
+    });
+  </script>
+</body>
+</html>

@@ -16,12 +16,12 @@
 
 ## Frontend
 - **Technology**: Server-side rendered HTML5 with vanilla JavaScript
-- **CSS**: TailwindCSS + custom responsive CSS framework
+- **CSS**: PicoCSS (minimal, classless CSS framework) + custom responsive utilities
 - **Responsive Design**: Mobile-first approach with breakpoints:
   - Mobile: 320px - 767px
   - Tablet: 768px - 1023px
   - Desktop: 1024px+
-- **Design Principles**: Modern, accessible, device-agnostic (Steve's requirement)
+- **Design Principles**: Modern, accessible, device-agnostic (Steve's requirement); semantic HTML with minimal CSS overhead
 
 ## DevOps & Quality
 - **Linting**: ESLint

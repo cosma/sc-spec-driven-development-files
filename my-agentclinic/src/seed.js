@@ -84,12 +84,22 @@ async function seed() {
       agentId TEXT NOT NULL,
       therapyId TEXT NOT NULL,
       scheduledAt DATETIME NOT NULL,
-      status TEXT DEFAULT 'scheduled',
+      status TEXT DEFAULT 'pending',
       notes TEXT,
       createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
       updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
       FOREIGN KEY (agentId) REFERENCES agents(id),
       FOREIGN KEY (therapyId) REFERENCES therapies(id)
+    )`);
+
+    await dbRun(db, `CREATE TABLE IF NOT EXISTS staff (
+      id TEXT PRIMARY KEY,
+      name TEXT NOT NULL,
+      email TEXT UNIQUE NOT NULL,
+      password TEXT NOT NULL,
+      role TEXT DEFAULT 'staff',
+      createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+      updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP
     )`);
 
     // Clear existing data
@@ -98,6 +108,7 @@ async function seed() {
     await dbRun(db, 'DELETE FROM therapies');
     await dbRun(db, 'DELETE FROM ailments');
     await dbRun(db, 'DELETE FROM agents');
+    await dbRun(db, 'DELETE FROM staff');
 
     // Create ailments
     const ailments = [
@@ -179,15 +190,75 @@ async function seed() {
 
     console.log(`Created ${therapies.length} therapies`);
 
-    // Create sample agent
-    const agentId = generateId();
-    const hashedPassword = bcryptjs.hashSync('password123', 10);
-    await dbRun(
-      db,
-      'INSERT INTO agents (id, name, email, password) VALUES (?, ?, ?, ?)',
-      [agentId, 'Claude', 'claude@agentclinic.local', hashedPassword]
-    );
+    // Create sample agents
+    const agents = [
+      { name: 'Claude', email: 'claude@agentclinic.local' },
+      { name: 'Alex', email: 'alex@agentclinic.local' },
+      { name: 'Jordan', email: 'jordan@agentclinic.local' },
+      { name: 'Sam', email: 'sam@agentclinic.local' },
+      { name: 'Morgan', email: 'morgan@agentclinic.local' }
+    ];
 
+    const agentIds = [];
+    for (const agent of agents) {
+      const agentId = generateId();
+      const hashedPassword = bcryptjs.hashSync('password123', 10);
+      await dbRun(
+        db,
+        'INSERT INTO agents (id, name, email, password) VALUES (?, ?, ?, ?)',
+        [agentId, agent.name, agent.email, hashedPassword]
+      );
+      agentIds.push(agentId);
+    }
+
+    console.log(`Created ${agents.length} agents`);
+
+    // Create staff members
+    const staffMembers = [
+      { name: 'Dr. Sarah', email: 'sarah@agentclinic.local' },
+      { name: 'Dr. James', email: 'james@agentclinic.local' },
+      { name: 'Maria', email: 'maria@agentclinic.local' }
+    ];
+
+    for (const staff of staffMembers) {
+      const staffId = generateId();
+      const hashedPassword = bcryptjs.hashSync('password123', 10);
+      await dbRun(
+        db,
+        'INSERT INTO staff (id, name, email, password) VALUES (?, ?, ?, ?)',
+        [staffId, staff.name, staff.email, hashedPassword]
+      );
+    }
+
+    console.log(`Created ${staffMembers.length} staff members`);
+
+    // Get all therapies
+    const allTherapies = await dbAll(db, 'SELECT id FROM therapies');
+
+    // Create sample appointments with different statuses
+    const statuses = ['pending', 'confirmed', 'completed', 'cancelled'];
+    const appointmentCount = 20;
+
+    for (let i = 0; i < appointmentCount; i++) {
+      const appointmentId = generateId();
+      const agentId = agentIds[i % agentIds.length];
+      const therapyId = allTherapies[i % allTherapies.length].id;
+      const status = statuses[Math.floor(i / 5) % statuses.length];
+
+      // Schedule appointments over the next month
+      const date = new Date();
+      date.setDate(date.getDate() + (i % 20));
+      date.setHours(10 + (i % 8));
+      date.setMinutes(0);
+
+      await dbRun(
+        db,
+        'INSERT INTO appointments (id, agentId, therapyId, scheduledAt, status) VALUES (?, ?, ?, ?, ?)',
+        [appointmentId, agentId, therapyId, date.toISOString(), status]
+      );
+    }
+
+    console.log(`Created ${appointmentCount} sample appointments`);
     console.log('Database seeded successfully!');
     db.close();
   } catch (error) {
