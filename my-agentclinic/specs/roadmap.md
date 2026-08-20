@@ -46,23 +46,35 @@
 
 ---
 
-## Phase 2: Staff Dashboard (Weeks 3-4)
+## Phase 2: Staff Dashboard ✅ COMPLETE
 **Goal**: Staff can manage appointments and see agent wellness
 
+**Status**: COMPLETE (Completed on 2026-08-20)
+
 ### Deliverables
-- [ ] Staff authentication & role-based access control
-- [ ] Staff dashboard showing:
-  - Upcoming appointments
-  - Agent roster with wellbeing status
-  - Appointment history
-- [ ] API endpoints:
-  - `GET /staff/appointments` - view all appointments
-  - `PATCH /appointments/:id` - confirm/complete appointment
-  - `GET /staff/agents` - see agent wellness metrics
+- [x] Staff authentication & role-based access control
+  - `POST /auth/staff-register` - register staff with email/password
+  - `POST /auth/staff-login` - authenticate with JWT tokens (7-day expiry)
+  - staffAuthMiddleware for protecting staff endpoints
+- [x] Staff dashboard showing:
+  - Appointment list with filtering and search
+  - Agent roster with wellness metrics and detail view
+  - Appointment status management workflow
+  - Responsive design with PicoCSS
+- [x] API endpoints:
+  - `GET /staff/appointments` - list appointments with filters (status, date, agent, search)
+  - `GET /staff/appointments/:id` - view appointment details
+  - `PATCH /appointments/:id` - update appointment status (pending → confirmed → completed/cancelled)
+  - `GET /staff/agents` - agent roster with wellness scores
+  - `GET /staff/agents/:id` - individual agent details with appointment history
 
 ### Success Criteria
-- Staff can view and manage appointments
-- Dashboard shows real-time appointment status
+- [x] Staff can register and log in
+- [x] Staff can view and manage appointments
+- [x] Dashboard displays real-time appointment status
+- [x] Wellness scores calculated correctly (completed/total ratio)
+- [x] Responsive UI for tablet and desktop viewing
+- [x] All endpoints tested and functional
 
 ---
 
