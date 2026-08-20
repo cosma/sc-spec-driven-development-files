@@ -1,187 +1,47 @@
 ---
 name: changelog
-description: Update CHANGELOG.md with git history before merging
+description: Maintains CHANGELOG.md in the project root using git commit history. Use when the user invokes /changelog, asks to "update the changelog", "generate a changelog", or wants to record what changed before merging a branch. Creates the file from scratch if it doesn't exist (all commits grouped by date); otherwise appends only commits newer than the last recorded date.
 ---
 
-# Changelog Management Skill
+# Changelog Skill
 
-This skill updates the project's CHANGELOG.md file by examining git commits since the last release and organizing them by date. Use this before merging to ensure the changelog reflects all work completed.
+## Workflow
 
-## What This Skill Does
-
-1. **Reads** the existing CHANGELOG.md (if it exists)
-2. **Examines** git history to find new commits
-3. **Extracts** commit messages and dates
-4. **Organizes** commits by date with descriptive categories
-5. **Updates** the [Unreleased] section with new entries
-6. **Preserves** previous release notes
-
-## How to Use
-
-### Automatic (Recommended)
-When ready to merge or tag a release, invoke this skill:
+1. Run the script from the project root:
 
 ```bash
-/changelog
+python3 <skill-dir>/scripts/changelog.py
 ```
 
-Then:
-1. Review the extracted commits
-2. Agree to the proposed changes
-3. Claude will update CHANGELOG.md automatically
+Where `<skill-dir>` is the directory containing this skill. Claude Code exposes the skill path — use it directly.
 
-### Manual Update
-If you need to manually update the changelog:
+2. The script handles both cases automatically:
+   - **No CHANGELOG.md**: reads full git history, writes the file with all dates
+   - **CHANGELOG.md exists**: finds the newest `## YYYY-MM-DD` heading, fetches commits after that date, prepends new sections
 
-1. Review git log: `git log --oneline [base-branch]..HEAD`
-2. Organize commits by category (Added, Changed, Fixed, Removed)
-3. Edit CHANGELOG.md in the [Unreleased] section
-4. Use date headings for significant milestones
+3. Review the output, edit bullet wording if needed, then commit `CHANGELOG.md` as part of the merge commit.
 
-## Changelog Format
-
-The changelog uses this structure:
+## Format
 
 ```markdown
 # Changelog
 
-## [Unreleased]
+## 2026-03-31
 
-### Added
-- Feature 1
-- Feature 2
+- Add responsive design to layout and CSS
+- Add Vitest test suite for components and routes
 
-### Changed
-- Enhancement 1
-- Enhancement 2
+## 2026-03-30
 
-### Fixed
-- Bug fix 1
-
-## [1.0.0] - 2026-08-20
-
-### Added
-- ...
+- Initial project scaffold
 ```
 
-## Categories to Use
+- One `# Changelog` title at the top
+- Date headings as `## YYYY-MM-DD`, newest first
+- Each commit is one bullet; wording may be cleaned up manually after generation
 
-- **Added**: New features, new test files, new documentation
-- **Changed**: Modifications to existing features, refactoring, updates
-- **Fixed**: Bug fixes, corrections
-- **Removed**: Deprecated features, deleted functionality
-- **Security**: Security-related changes or fixes
-- **Deprecated**: Features scheduled for removal
+## Notes
 
-## Commit Message Best Practices
-
-For easier changelog generation, write commit messages following this pattern:
-
-```
-<type>: <description>
-
-[optional body]
-```
-
-Where type is one of:
-- `feat:` - A new feature (maps to Added)
-- `fix:` - A bug fix (maps to Fixed)
-- `docs:` - Documentation changes
-- `refactor:` - Code refactoring (maps to Changed)
-- `test:` - Test additions/changes
-- `chore:` - Build, CI, dependencies
-- `style:` - Code style (formatting, etc)
-- `perf:` - Performance improvements
-
-Example:
-```
-feat: Add responsive design to all pages
-
-- Added media queries for mobile (320px)
-- Added touch-friendly tap targets (44px)
-- Updated dashboard for tablet support
-```
-
-## Workflow
-
-### Before Merging to Main
-1. Finalize all commits on your branch
-2. Run: `/changelog`
-3. Review the proposed updates
-4. Commit the updated CHANGELOG.md
-5. Create/update pull request with changelog changes
-
-### Before Tagging Release
-1. Ensure all PRs are merged to main
-2. Run: `/changelog`
-3. Rename [Unreleased] section to the version number (e.g., [1.1.0])
-4. Add release date: `## [1.1.0] - 2026-09-01`
-5. Commit: `git commit -m "Bump version to 1.1.0 and update changelog"`
-6. Tag: `git tag -a v1.1.0 -m "Release version 1.1.0"`
-
-## What Gets Extracted
-
-The skill extracts:
-- Commit hash (short form)
-- Commit date
-- Commit message
-- Categorizes by type (feat, fix, docs, etc.)
-- Groups by date with most recent first
-
-## Filtering Out Commits
-
-Some commits are automatically excluded:
-- Merge commits (git merge messages)
-- Revert commits (git revert messages)
-- CI/CD automation
-- "Update changelog" commits (avoid loops)
-
-## Manual Overrides
-
-If the automatic extraction misses something or includes something wrong:
-
-1. Edit CHANGELOG.md directly
-2. Add/remove entries as needed
-3. Keep the format consistent
-4. The next `/changelog` run will preserve manually edited sections
-
-## Tips
-
-- Run `/changelog` frequently to keep it up-to-date
-- Write clear, user-friendly commit messages (they'll be in the changelog)
-- Group related commits in the same section
-- Include the issue/ticket number in related entries
-- Highlight breaking changes under a special section
-- Link to related documentation or issues when relevant
-
-## Examples
-
-### Good Changelog Entry
-```markdown
-### Added
-- Responsive design with mobile-first approach
-- Vitest test suite with 35+ test cases
-- Comprehensive testing documentation
-```
-
-### Another Example
-```markdown
-### Changed
-- Refactored authentication middleware for better performance
-- Updated CSS with flexible grid layouts
-- Improved form accessibility with 44px touch targets
-```
-
-## Related Files
-
-- **CHANGELOG.md** - Main changelog file (root directory)
-- **README.md** - Project overview with quick links to changelog
-- **.git/logs/** - Git reflog for historical reference
-
-## Automation Notes
-
-This skill should be invoked:
-- ✅ Before merging PRs (recommended)
-- ✅ Before tagging releases (required)
-- ✅ At the end of development sprints/cycles
-- ✅ When preparing deployment notes
+- Run from the **project root** (same directory as `.git/`)
+- Commit subjects come directly from `git log`; clean them up manually if needed
+- The script is idempotent: re-running when nothing is new prints a message and exits without modifying the file
