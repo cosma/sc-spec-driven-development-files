@@ -1,4 +1,4 @@
-import dotenv from 'dotenv';
+import { createRequire } from 'module';
 import express from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
@@ -8,6 +8,9 @@ import sqlite3 from 'sqlite3';
 import path from 'path';
 import crypto from 'crypto';
 import { fileURLToPath } from 'url';
+
+const require = createRequire(import.meta.url);
+const dotenv = require('dotenv');
 
 dotenv.config();
 
