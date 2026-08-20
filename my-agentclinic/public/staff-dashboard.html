@@ -701,10 +701,10 @@
               <div class="agent-info">
                 <h3>${escapeHtml(agent.name)}</h3>
                 <p>${escapeHtml(agent.email)}</p>
-                <p><span class="wellness-indicator ${wellnessClass}"></span>${escapeHtml(agent.totalAppointments.toString())} appointments (${escapeHtml(agent.completedAppointments.toString())} completed)</p>
+                <p><span class="wellness-indicator ${wellnessClass}"></span>${escapeHtml(agent.therapiesCompleted.toString())} therapies completed • ${escapeHtml(agent.ailmentResolutionRate.toString())}% resolution</p>
               </div>
               <div class="wellness-score">
-                <p class="score">${escapeHtml(agent.wellnessScore.toString())}%</p>
+                <p class="score">${escapeHtml(agent.wellnessScore.toString())}</p>
                 <p class="label">Wellness Score</p>
               </div>
             </div>
@@ -735,9 +735,14 @@
         let details = `
           <p><strong>Name:</strong> ${escapeHtml(agent.name)}</p>
           <p><strong>Email:</strong> ${escapeHtml(agent.email)}</p>
-          <p><strong>Wellness Score:</strong> <span style="font-weight: bold;">${escapeHtml(agent.wellnessScore.toString())}%</span> <span class="wellness-indicator ${wellnessClass}"></span></p>
+          <p><strong>Wellness Score:</strong> <span style="font-weight: bold; font-size: 1.5rem;">${escapeHtml(agent.wellnessScore.toString())}</span>/100 <span class="wellness-indicator ${wellnessClass}"></span></p>
+
+          <hr>
+          <h3>Performance Metrics</h3>
+          <p><strong>Therapies Completed:</strong> ${escapeHtml(agent.therapiesCompleted.toString())}</p>
+          <p><strong>Ailment Resolution Rate:</strong> ${escapeHtml(agent.ailmentResolutionRate.toString())}%</p>
+          <p><strong>Active Ailments:</strong> ${escapeHtml(agent.activeAilments.toString())}</p>
           <p><strong>Total Appointments:</strong> ${escapeHtml(agent.totalAppointments.toString())}</p>
-          <p><strong>Completed Appointments:</strong> ${escapeHtml(agent.completedAppointments.toString())}</p>
           <p><strong>Member Since:</strong> ${escapeHtml(new Date(agent.createdAt).toLocaleDateString())}</p>
 
           <hr>
