@@ -489,6 +489,19 @@
     const API_URL = 'http://localhost:3000';
     let currentTherapyId = null;
 
+    // HTML escape utility to prevent XSS
+    function escapeHtml(text) {
+      if (!text) return '';
+      const map = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#039;'
+      };
+      return text.toString().replace(/[&<>"']/g, char => map[char]);
+    }
+
     // Initialize
     document.addEventListener('DOMContentLoaded', () => {
       const auth = checkAuthStatus();
@@ -569,14 +582,15 @@
         therapies.forEach(therapy => {
           const div = document.createElement('div');
           div.className = 'therapy-card';
+          const ailmentNames = therapy.ailments ? therapy.ailments.map(a => escapeHtml(a.name)).join(', ') : 'General';
           div.innerHTML = `
-            <h4>${therapy.name}</h4>
-            <p>${therapy.description}</p>
+            <h4>${escapeHtml(therapy.name)}</h4>
+            <p>${escapeHtml(therapy.description)}</p>
             <div class="therapy-meta">
-              <p><strong>Duration:</strong> ${therapy.duration} minutes</p>
-              <p><strong>For:</strong> ${therapy.ailments?.map(a => a.name).join(', ') || 'General'}</p>
+              <p><strong>Duration:</strong> ${escapeHtml(therapy.duration.toString())} minutes</p>
+              <p><strong>For:</strong> ${ailmentNames}</p>
             </div>
-            <button class="btn-primary" style="width: 100%; padding: 0.5rem;" onclick="openBookModal('${therapy.id}', '${therapy.name}')">Book Now</button>
+            <button class="btn-primary" style="width: 100%; padding: 0.5rem;" onclick="openBookModal('${escapeHtml(therapy.id)}', '${escapeHtml(therapy.name)}')">Book Now</button>
           `;
           list.appendChild(div);
         });
@@ -605,10 +619,10 @@
           const div = document.createElement('div');
           div.className = 'appointment-item';
           div.innerHTML = `
-            <h4>${apt.therapyName}</h4>
-            <div class="appointment-meta">Scheduled: ${date.toLocaleString()}</div>
-            <div class="appointment-meta">Duration: ${apt.duration} minutes</div>
-            <div class="appointment-status">${apt.status}</div>
+            <h4>${escapeHtml(apt.therapyName)}</h4>
+            <div class="appointment-meta">Scheduled: ${escapeHtml(date.toLocaleString())}</div>
+            <div class="appointment-meta">Duration: ${escapeHtml(apt.duration.toString())} minutes</div>
+            <div class="appointment-status">${escapeHtml(apt.status)}</div>
           `;
           list.appendChild(div);
         });
@@ -624,7 +638,8 @@
 
     function openBookModal(therapyId, therapyName) {
       currentTherapyId = therapyId;
-      document.getElementById('therapyName').textContent = therapyName;
+      // textContent is safe against XSS, but escape for defense-in-depth
+      document.getElementById('therapyName').textContent = escapeHtml(therapyName);
       document.getElementById('appointmentDate').value = '';
       document.getElementById('appointmentNotes').value = '';
       document.getElementById('bookModal').classList.add('active');
