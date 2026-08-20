@@ -1,6 +1,7 @@
 {
   "name": "agentclinic",
   "version": "1.0.0",
+  "type": "module",
   "description": "AgentClinic: Appointment booking system for AI agents",
   "main": "dist/index.js",
   "scripts": {
