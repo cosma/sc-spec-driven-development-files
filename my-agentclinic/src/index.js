@@ -8,6 +8,10 @@ import sqlite3 from 'sqlite3';
 import path from 'path';
 import crypto from 'crypto';
 import { fileURLToPath } from 'url';
+import {
+  calculateWellnessScore,
+  getPerformanceMetrics
+} from './services/wellnessCalculator.js';
 
 const require = createRequire(import.meta.url);
 const dotenv = require('dotenv');
@@ -600,17 +604,14 @@ app.get('/staff/agents', staffAuthMiddleware, async (req, res) => {
     const agents = await dbAll('SELECT id, name, email, createdAt FROM agents');
 
     for (const agent of agents) {
+      const wellnessScore = await calculateWellnessScore(dbAll, agent.id);
+      const metrics = await getPerformanceMetrics(dbAll, agent.id);
+
       const stats = await dbGet(
-        `SELECT
-          COUNT(*) as totalAppointments,
-          SUM(CASE WHEN status = 'completed' THEN 1 ELSE 0 END) as completedAppointments
+        `SELECT COUNT(*) as totalAppointments
          FROM appointments WHERE agentId = ?`,
         [agent.id]
       );
-
-      const wellnessScore = stats.totalAppointments > 0
-        ? Math.round((stats.completedAppointments / stats.totalAppointments) * 100)
-        : 0;
 
       const lastAppointment = await dbGet(
         `SELECT scheduledAt FROM appointments WHERE agentId = ? ORDER BY scheduledAt DESC LIMIT 1`,
@@ -618,8 +619,10 @@ app.get('/staff/agents', staffAuthMiddleware, async (req, res) => {
       );
 
       agent.wellnessScore = wellnessScore;
+      agent.therapiesCompleted = metrics.therapiesCompleted;
+      agent.ailmentResolutionRate = metrics.ailmentResolutionRate;
+      agent.activeAilments = metrics.activeAilments;
       agent.totalAppointments = stats.totalAppointments || 0;
-      agent.completedAppointments = stats.completedAppointments || 0;
       agent.lastAppointmentAt = lastAppointment ? lastAppointment.scheduledAt : null;
     }
 
@@ -637,6 +640,9 @@ app.get('/staff/agents/:id', staffAuthMiddleware, async (req, res) => {
       return res.status(404).json({ error: 'Agent not found' });
     }
 
+    const wellnessScore = await calculateWellnessScore(dbAll, req.params.id);
+    const metrics = await getPerformanceMetrics(dbAll, req.params.id);
+
     const appointments = await dbAll(
       `SELECT a.*, t.name as therapyName, t.duration
        FROM appointments a
@@ -647,27 +653,56 @@ app.get('/staff/agents/:id', staffAuthMiddleware, async (req, res) => {
     );
 
     const stats = await dbGet(
-      `SELECT
-        COUNT(*) as totalAppointments,
-        SUM(CASE WHEN status = 'completed' THEN 1 ELSE 0 END) as completedAppointments
+      `SELECT COUNT(*) as totalAppointments
        FROM appointments WHERE agentId = ?`,
       [req.params.id]
     );
 
-    const wellnessScore = stats.totalAppointments > 0
-      ? Math.round((stats.completedAppointments / stats.totalAppointments) * 100)
-      : 0;
-
     res.json({
       ...agent,
       wellnessScore,
+      therapiesCompleted: metrics.therapiesCompleted,
+      ailmentResolutionRate: metrics.ailmentResolutionRate,
+      activeAilments: metrics.activeAilments,
       totalAppointments: stats.totalAppointments || 0,
-      completedAppointments: stats.completedAppointments || 0,
       appointments
     });
   } catch (error) {
     console.error('Error fetching agent details:', error);
     res.status(500).json({ error: 'Failed to fetch agent details' });
+  }
+});
+
+// Agent Profile with Wellness Metrics
+app.get('/agents/profile', authMiddleware, async (req, res) => {
+  try {
+    const agent = await dbGet('SELECT id, name, email, createdAt FROM agents WHERE id = ?', [req.agentId]);
+    if (!agent) {
+      return res.status(404).json({ error: 'Agent not found' });
+    }
+
+    const wellnessScore = await calculateWellnessScore(dbAll, req.agentId);
+    const metrics = await getPerformanceMetrics(dbAll, req.agentId);
+
+    const stats = await dbGet(
+      `SELECT COUNT(*) as totalAppointments
+       FROM appointments WHERE agentId = ?`,
+      [req.agentId]
+    );
+
+    const now = new Date();
+    res.json({
+      ...agent,
+      wellnessScore,
+      therapiesCompleted: metrics.therapiesCompleted,
+      ailmentResolutionRate: metrics.ailmentResolutionRate,
+      activeAilments: metrics.activeAilments,
+      totalAppointments: stats.totalAppointments || 0,
+      lastUpdated: now.toISOString()
+    });
+  } catch (error) {
+    console.error('Error fetching agent profile:', error);
+    res.status(500).json({ error: 'Failed to fetch agent profile' });
   }
 });
 

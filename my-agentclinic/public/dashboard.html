@@ -420,12 +420,17 @@
         </div>
 
         <div class="profile-section">
-          <h3>Wellness Status</h3>
+          <h3>Wellness Score</h3>
           <div class="wellness-status">
-            <p>You're doing great! Keep up with your wellness routine.</p>
-            <p style="font-size: 0.875rem; color: var(--gray-600); margin-top: 1rem;">
-              Next appointment: <span id="nextAppointment" style="font-weight: 600;">No appointments yet</span>
-            </p>
+            <div style="text-align: center; margin-bottom: 1rem;">
+              <div style="font-size: 3rem; font-weight: bold; color: var(--primary-color);" id="wellnessScore">--</div>
+              <p style="font-size: 0.875rem; color: var(--gray-600); margin-top: 0.5rem;">out of 100</p>
+            </div>
+            <div style="margin-top: 1.5rem; border-top: 1px solid rgba(0,0,0,0.1); padding-top: 1rem;">
+              <p style="font-size: 0.875rem; margin-bottom: 0.5rem;"><strong>Therapies Completed:</strong> <span id="therapiesCompleted">0</span></p>
+              <p style="font-size: 0.875rem; margin-bottom: 0.5rem;"><strong>Ailment Resolution Rate:</strong> <span id="ailmentResolutionRate">0</span>%</p>
+              <p style="font-size: 0.875rem; margin-bottom: 0.5rem;"><strong>Active Ailments:</strong> <span id="activeAilments">0</span></p>
+            </div>
           </div>
         </div>
       </div>
@@ -529,9 +534,27 @@
       });
 
       // Load data
+      loadWellnessMetrics();
       loadTherapies();
       loadAppointments();
     });
+
+    async function loadWellnessMetrics() {
+      try {
+        const response = await fetch(`${API_URL}/agents/profile`, {
+          headers: getAuthHeaders()
+        });
+        const profile = await response.json();
+
+        document.getElementById('wellnessScore').textContent = profile.wellnessScore || 0;
+        document.getElementById('therapiesCompleted').textContent = profile.therapiesCompleted || 0;
+        document.getElementById('ailmentResolutionRate').textContent = profile.ailmentResolutionRate || 0;
+        document.getElementById('activeAilments').textContent = profile.activeAilments || 0;
+      } catch (error) {
+        console.error('Error loading wellness metrics:', error);
+        document.getElementById('wellnessScore').textContent = '--';
+      }
+    }
 
     function switchTab(tabName) {
       document.querySelectorAll('.dashboard-tabs button').forEach(btn => {
