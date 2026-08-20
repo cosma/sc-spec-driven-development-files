@@ -576,15 +576,15 @@
 
         appointments.forEach(apt => {
           const date = new Date(apt.scheduledAt).toLocaleString();
-          const statusBadge = `<span class="status-badge status-${apt.status}">${apt.status}</span>`;
+          const statusBadge = `<span class="status-badge status-${escapeHtml(apt.status)}">${escapeHtml(apt.status)}</span>`;
           html += `
             <tr>
-              <td>${apt.agentName}</td>
-              <td>${apt.therapyName}</td>
-              <td>${date}</td>
+              <td>${escapeHtml(apt.agentName)}</td>
+              <td>${escapeHtml(apt.therapyName)}</td>
+              <td>${escapeHtml(date)}</td>
               <td>${statusBadge}</td>
               <td>
-                <button onclick="showAppointmentDetail('${apt.id}')" style="padding: 0.5rem 1rem; margin: 0;">View</button>
+                <button onclick="showAppointmentDetail('${escapeHtml(apt.id)}')" style="padding: 0.5rem 1rem; margin: 0;">View</button>
               </td>
             </tr>
           `;
@@ -613,27 +613,28 @@
         const date = new Date(apt.scheduledAt).toLocaleString();
 
         const details = `
-          <p><strong>Agent:</strong> ${apt.agentName}</p>
-          <p><strong>Email:</strong> ${apt.agentEmail}</p>
-          <p><strong>Therapy:</strong> ${apt.therapyName}</p>
-          <p><strong>Duration:</strong> ${apt.duration} minutes</p>
-          <p><strong>Scheduled:</strong> ${date}</p>
-          <p><strong>Status:</strong> <span class="status-badge status-${apt.status}">${apt.status}</span></p>
-          <p><strong>Notes:</strong> ${apt.notes || 'None'}</p>
+          <p><strong>Agent:</strong> ${escapeHtml(apt.agentName)}</p>
+          <p><strong>Email:</strong> ${escapeHtml(apt.agentEmail)}</p>
+          <p><strong>Therapy:</strong> ${escapeHtml(apt.therapyName)}</p>
+          <p><strong>Duration:</strong> ${escapeHtml(apt.duration.toString())} minutes</p>
+          <p><strong>Scheduled:</strong> ${escapeHtml(date)}</p>
+          <p><strong>Status:</strong> <span class="status-badge status-${escapeHtml(apt.status)}">${escapeHtml(apt.status)}</span></p>
+          <p><strong>Notes:</strong> ${escapeHtml(apt.notes || 'None')}</p>
         `;
 
         document.getElementById('appointmentDetails').innerHTML = details;
 
         let footer = '';
+        const escapedId = escapeHtml(apt.id);
         if (apt.status === 'pending') {
           footer = `
-            <button onclick="updateAppointmentStatus('${apt.id}', 'confirmed')">Confirm</button>
-            <button onclick="updateAppointmentStatus('${apt.id}', 'cancelled')">Cancel</button>
+            <button onclick="updateAppointmentStatus('${escapedId}', 'confirmed')">Confirm</button>
+            <button onclick="updateAppointmentStatus('${escapedId}', 'cancelled')">Cancel</button>
           `;
         } else if (apt.status === 'confirmed') {
           footer = `
-            <button onclick="updateAppointmentStatus('${apt.id}', 'completed')">Mark Completed</button>
-            <button onclick="updateAppointmentStatus('${apt.id}', 'cancelled')">Cancel</button>
+            <button onclick="updateAppointmentStatus('${escapedId}', 'completed')">Mark Completed</button>
+            <button onclick="updateAppointmentStatus('${escapedId}', 'cancelled')">Cancel</button>
           `;
         }
 
@@ -696,14 +697,14 @@
           const wellnessLabel = agent.wellnessScore >= 70 ? 'Good' : agent.wellnessScore >= 40 ? 'Needs Attention' : 'Critical';
 
           html += `
-            <div class="agent-card" onclick="showAgentDetail('${agent.id}')">
+            <div class="agent-card" onclick="showAgentDetail('${escapeHtml(agent.id)}')">
               <div class="agent-info">
-                <h3>${agent.name}</h3>
-                <p>${agent.email}</p>
-                <p><span class="wellness-indicator ${wellnessClass}"></span>${agent.totalAppointments} appointments (${agent.completedAppointments} completed)</p>
+                <h3>${escapeHtml(agent.name)}</h3>
+                <p>${escapeHtml(agent.email)}</p>
+                <p><span class="wellness-indicator ${wellnessClass}"></span>${escapeHtml(agent.totalAppointments.toString())} appointments (${escapeHtml(agent.completedAppointments.toString())} completed)</p>
               </div>
               <div class="wellness-score">
-                <p class="score">${agent.wellnessScore}%</p>
+                <p class="score">${escapeHtml(agent.wellnessScore.toString())}%</p>
                 <p class="label">Wellness Score</p>
               </div>
             </div>
@@ -732,12 +733,12 @@
         const wellnessClass = agent.wellnessScore >= 70 ? 'wellness-good' : agent.wellnessScore >= 40 ? 'wellness-warning' : 'wellness-critical';
 
         let details = `
-          <p><strong>Name:</strong> ${agent.name}</p>
-          <p><strong>Email:</strong> ${agent.email}</p>
-          <p><strong>Wellness Score:</strong> <span style="font-weight: bold;">${agent.wellnessScore}%</span> <span class="wellness-indicator ${wellnessClass}"></span></p>
-          <p><strong>Total Appointments:</strong> ${agent.totalAppointments}</p>
-          <p><strong>Completed Appointments:</strong> ${agent.completedAppointments}</p>
-          <p><strong>Member Since:</strong> ${new Date(agent.createdAt).toLocaleDateString()}</p>
+          <p><strong>Name:</strong> ${escapeHtml(agent.name)}</p>
+          <p><strong>Email:</strong> ${escapeHtml(agent.email)}</p>
+          <p><strong>Wellness Score:</strong> <span style="font-weight: bold;">${escapeHtml(agent.wellnessScore.toString())}%</span> <span class="wellness-indicator ${wellnessClass}"></span></p>
+          <p><strong>Total Appointments:</strong> ${escapeHtml(agent.totalAppointments.toString())}</p>
+          <p><strong>Completed Appointments:</strong> ${escapeHtml(agent.completedAppointments.toString())}</p>
+          <p><strong>Member Since:</strong> ${escapeHtml(new Date(agent.createdAt).toLocaleDateString())}</p>
 
           <hr>
           <h3>Recent Appointments</h3>
@@ -747,8 +748,8 @@
           details += '<table class="appointments-table"><thead><tr><th>Therapy</th><th>Scheduled</th><th>Status</th></tr></thead><tbody>';
           agent.appointments.slice(0, 5).forEach(apt => {
             const date = new Date(apt.scheduledAt).toLocaleString();
-            const statusBadge = `<span class="status-badge status-${apt.status}">${apt.status}</span>`;
-            details += `<tr><td>${apt.therapyName}</td><td>${date}</td><td>${statusBadge}</td></tr>`;
+            const statusBadge = `<span class="status-badge status-${escapeHtml(apt.status)}">${escapeHtml(apt.status)}</span>`;
+            details += `<tr><td>${escapeHtml(apt.therapyName)}</td><td>${escapeHtml(date)}</td><td>${statusBadge}</td></tr>`;
           });
           details += '</tbody></table>';
         } else {
@@ -780,6 +781,19 @@
         clearTimeout(timeoutId);
         timeoutId = setTimeout(() => func.apply(this, args), delay);
       };
+    }
+
+    // HTML escape utility to prevent XSS
+    function escapeHtml(text) {
+      if (!text) return '';
+      const map = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#039;'
+      };
+      return text.toString().replace(/[&<>"']/g, char => map[char]);
     }
 
     // Load appointments on page load

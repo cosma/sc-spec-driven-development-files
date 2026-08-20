@@ -120,7 +120,12 @@ async function initializeDb() {
 
 // Express app setup
 const app = express();
-const JWT_SECRET = process.env.JWT_SECRET || 'secret';
+const JWT_SECRET = process.env.JWT_SECRET;
+
+if (!JWT_SECRET) {
+  console.error('ERROR: JWT_SECRET environment variable is required for secure token handling');
+  process.exit(1);
+}
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -292,7 +297,7 @@ app.post('/appointments', authMiddleware, async (req, res) => {
     const appointmentId = generateId();
     await dbRun(
       `INSERT INTO appointments (id, agentId, therapyId, scheduledAt, notes, status)
-       VALUES (?, ?, ?, ?, ?, 'scheduled')`,
+       VALUES (?, ?, ?, ?, ?, 'pending')`,
       [appointmentId, req.agentId, therapyId, scheduledAt, notes || null]
     );
 
@@ -324,13 +329,17 @@ app.get('/appointments', authMiddleware, async (req, res) => {
 
 app.get('/appointments/agent/:agentId', authMiddleware, async (req, res) => {
   try {
+    if (req.agentId !== req.params.agentId) {
+      return res.status(403).json({ error: 'Unauthorized: Cannot view other agents appointments' });
+    }
+
     const appointments = await dbAll(
       `SELECT a.*, t.name as therapyName, t.duration
        FROM appointments a
        INNER JOIN therapies t ON a.therapyId = t.id
        WHERE a.agentId = ?
        ORDER BY a.scheduledAt DESC`,
-      [req.params.agentId]
+      [req.agentId]
     );
 
     res.json(appointments);
