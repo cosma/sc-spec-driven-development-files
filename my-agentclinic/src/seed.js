@@ -1,7 +1,12 @@
-const sqlite3 = require('sqlite3').verbose();
-const path = require('path');
-const bcryptjs = require('bcryptjs');
-const crypto = require('crypto');
+import sqlite3 from 'sqlite3';
+import path from 'path';
+import bcryptjs from 'bcryptjs';
+import crypto from 'crypto';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const sqlite3Verbose = sqlite3.verbose();
 
 const DB_PATH = path.join(__dirname, '../prisma/dev.db');
 
@@ -37,7 +42,7 @@ function dbAll(db, sql, params = []) {
 }
 
 async function seed() {
-  const db = new sqlite3.Database(DB_PATH);
+  const db = new sqlite3Verbose.Database(DB_PATH);
 
   try {
     console.log('Seeding database...');

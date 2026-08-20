@@ -1,17 +1,23 @@
-require('dotenv').config();
+import dotenv from 'dotenv';
+import express from 'express';
+import cors from 'cors';
+import bodyParser from 'body-parser';
+import jwt from 'jsonwebtoken';
+import bcryptjs from 'bcryptjs';
+import sqlite3 from 'sqlite3';
+import path from 'path';
+import crypto from 'crypto';
+import { fileURLToPath } from 'url';
 
-const express = require('express');
-const cors = require('cors');
-const bodyParser = require('body-parser');
-const jwt = require('jsonwebtoken');
-const bcryptjs = require('bcryptjs');
-const sqlite3 = require('sqlite3').verbose();
-const path = require('path');
-const crypto = require('crypto');
+dotenv.config();
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const sqlite3Verbose = sqlite3.verbose();
 
 // Database setup
 const DB_PATH = path.join(__dirname, '../prisma/dev.db');
-let db = new sqlite3.Database(DB_PATH, (err) => {
+let db = new sqlite3Verbose.Database(DB_PATH, (err) => {
   if (err) {
     console.error('Database connection error:', err);
   }
