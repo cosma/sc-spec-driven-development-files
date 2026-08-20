@@ -7,28 +7,41 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
   <link rel="stylesheet" href="styles.css">
   <style>
+    :root {
+      --primary-color: #ff8c00;
+      --primary-focus: #e67e00;
+      --form-element-invalid-border-color: #d9534f;
+    }
+
     body {
       display: flex;
       align-items: center;
       justify-content: center;
       min-height: 100vh;
-      background: var(--form-element-background-color);
+      background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
     }
     .auth-container {
       max-width: 400px;
       width: 100%;
-      padding: 1rem;
+      padding: 2rem;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
     }
     .auth-header {
       text-align: center;
       margin-bottom: 2rem;
+      border-bottom: 3px solid #ff8c00;
+      padding-bottom: 1.5rem;
     }
     .auth-header h1 {
       margin: 0 0 0.5rem 0;
+      color: #1a1a1a;
     }
     .auth-header p {
-      color: var(--muted-color);
+      color: #ff8c00;
       margin: 0;
+      font-weight: bold;
     }
     .form-group {
       margin-bottom: 1.5rem;
@@ -44,13 +57,45 @@
     }
     button {
       width: 100%;
+      background-color: #ff8c00;
+      border-color: #ff8c00;
+      color: white;
     }
+
+    button:hover {
+      background-color: #e67e00;
+      border-color: #e67e00;
+    }
+
+    input[type="email"],
+    input[type="password"],
+    input[type="text"] {
+      border-color: #ddd;
+    }
+
+    input[type="email"]:focus,
+    input[type="password"]:focus,
+    input[type="text"]:focus {
+      border-color: #ff8c00;
+      box-shadow: 0 0 0 3px rgba(255, 140, 0, 0.1);
+    }
+
+    small {
+      color: #666;
+    }
+
     .auth-footer {
       text-align: center;
       margin-top: 1.5rem;
     }
     .auth-footer a {
-      color: var(--primary-color);
+      color: #ff8c00;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .auth-footer a:hover {
+      text-decoration: underline;
     }
   </style>
 </head>
