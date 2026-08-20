@@ -167,8 +167,10 @@ Full API documentation available in [API_DOCS.md](./API_DOCS.md).
 | **Backend** | Express.js 4.17.1 |
 | **Database** | SQLite3 5.0.11 |
 | **Auth** | JWT (jsonwebtoken 8.5.1) + bcryptjs 2.4.3 |
-| **Frontend** | HTML5, Tailwind CSS, Vanilla JavaScript |
+| **Frontend** | HTML5, TailwindCSS, Vanilla JavaScript |
 | **Middleware** | CORS, body-parser |
+| **Responsive Design** | Mobile-first CSS with breakpoints (320px, 768px, 1024px+) |
+| **Accessibility** | Touch-friendly UI (44px+ tap targets), Semantic HTML |
 
 ## Database Schema
 
@@ -313,7 +315,7 @@ Ensure frontend is calling `http://localhost:3000` (not different port/domain)
 
 **Technical Improvements:**
 - [ ] TypeScript migration
-- [ ] Comprehensive test suite (Jest)
+- [ ] Comprehensive test suite (Vitest)
 - [ ] Rate limiting and request throttling
 - [ ] Production deployment guide
 - [ ] Docker containerization

@@ -66,7 +66,7 @@ Build the foundation of AgentClinic: a booking system where agents can browse th
 6. ✅ Password hashing with bcryptjs (10 salt rounds)
 
 ## Task Group 7: Testing & Documentation ✅ COMPLETE
-1. ✅ Integration test coverage:
+1. ✅ Integration test coverage using Vitest:
    - Health endpoint returns OK
    - Agent registration creates account
    - Agent login returns JWT token
@@ -81,6 +81,9 @@ Build the foundation of AgentClinic: a booking system where agents can browse th
    - Running the server
    - Demo account credentials
    - Troubleshooting
+4. ✅ Test infrastructure (Vitest configuration)
+   - `npm test` command for running tests
+   - TypeScript support for tests
 
 ## Task Group 8: Frontend Layout Components ✅ COMPLETE
 1. ✅ Create reusable layout component system

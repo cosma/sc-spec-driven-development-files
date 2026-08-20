@@ -50,6 +50,72 @@
       color: var(--gray-600);
       margin-top: 0.25rem;
     }
+
+    /* Responsive Design - Tablet and below */
+    @media (max-width: 768px) {
+      .register-container {
+        padding: 1.5rem;
+        min-height: auto;
+      }
+
+      .register-card {
+        padding: 1.5rem;
+      }
+
+      .register-header h1 {
+        font-size: 1.5rem;
+      }
+
+      .register-header h2 {
+        font-size: 1.125rem;
+      }
+    }
+
+    /* Responsive Design - Mobile */
+    @media (max-width: 480px) {
+      .register-container {
+        padding: 1rem;
+      }
+
+      .register-card {
+        padding: 1.25rem;
+        max-width: 100%;
+      }
+
+      .register-header {
+        margin-bottom: 1.5rem;
+      }
+
+      .register-header h1 {
+        font-size: 1.25rem;
+      }
+
+      .register-header h2 {
+        font-size: 1rem;
+      }
+
+      .register-form {
+        gap: 1rem;
+      }
+
+      .form-group {
+        margin-bottom: 1rem;
+      }
+
+      .form-group input {
+        min-height: 44px;
+        font-size: 1rem;
+      }
+
+      button[type="submit"] {
+        min-height: 44px;
+        font-size: 1rem;
+      }
+
+      .password-hint {
+        font-size: 0.75rem;
+      }
+    }
   </style>
 </head>
 <body>

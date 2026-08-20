@@ -433,4 +433,242 @@ p {
   h3 {
     font-size: 1.25rem;
   }
+
+  .tab-btn {
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+    min-height: 44px;
+  }
+
+  .card {
+    padding: 1rem;
+  }
+
+  button {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  .space-x-4 {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .header-brand {
+    font-size: 1.25rem;
+  }
+
+  label {
+    font-size: 0.875rem;
+  }
+}
+
+/* Tablet Optimizations (768px - 1023px) */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .app-main {
+    padding: 1.5rem 1rem;
+  }
+
+  .grid-2 {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  }
+
+  .grid-3 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .header-content {
+    padding: 1rem;
+  }
+
+  .footer-content {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Small Mobile Devices (max-width 480px) */
+@media (max-width: 480px) {
+  :root {
+    font-size: 14px;
+  }
+
+  .header-content {
+    padding: 0.75rem 1rem;
+  }
+
+  .header-brand {
+    font-size: 1.125rem;
+  }
+
+  .header-nav {
+    width: 100%;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .header-nav a,
+  .header-nav button {
+    width: 100%;
+    text-align: center;
+    padding: 0.75rem;
+    min-height: 44px;
+  }
+
+  .app-main {
+    padding: 1rem 0.75rem;
+  }
+
+  .card {
+    padding: 0.75rem;
+  }
+
+  .form-group {
+    margin-bottom: 1rem;
+  }
+
+  .grid-2,
+  .grid-3 {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .tabs {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .tab-btn {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.75rem;
+    min-height: 44px;
+    flex: 1;
+  }
+
+  .space-x-4 {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .space-x-4 button {
+    width: 100%;
+  }
+
+  .footer-content {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .footer-section h3 {
+    font-size: 0.75rem;
+  }
+
+  h1 {
+    font-size: 1.5rem;
+  }
+
+  h2 {
+    font-size: 1.25rem;
+  }
+
+  h3 {
+    font-size: 1rem;
+  }
+
+  h4 {
+    font-size: 0.875rem;
+  }
+
+  button,
+  input,
+  textarea,
+  select {
+    font-size: 1rem;
+  }
+
+  /* Ensure touch targets are at least 44x44 pixels */
+  button,
+  a,
+  input[type="button"],
+  input[type="submit"] {
+    min-height: 44px;
+    min-width: 44px;
+    padding: 0.75rem 1rem;
+  }
+
+  .alert {
+    padding: 0.75rem;
+    font-size: 0.875rem;
+  }
+}
+
+/* Large Desktop (1440px+) */
+@media (min-width: 1440px) {
+  .header-content,
+  .app-main,
+  .container,
+  .footer-content {
+    max-width: 1400px;
+  }
+
+  .grid-2 {
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  }
+
+  .grid-3 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Landscape Mobile (small height) */
+@media (max-height: 500px) and (orientation: landscape) {
+  .app-main {
+    min-height: auto;
+    padding: 1rem;
+  }
+
+  .card {
+    padding: 0.75rem;
+  }
+
+  .form-group {
+    margin-bottom: 0.75rem;
+  }
+
+  button {
+    padding: 0.4rem 0.8rem;
+  }
+}
+
+/* High Density Displays (Retina/2x) */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  /* Optimize for high pixel density */
+  .card,
+  .app-header,
+  .app-footer {
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  }
+}
+
+/* Print Styles */
+@media print {
+  .app-header,
+  .app-footer,
+  .header-nav,
+  button,
+  input[type="submit"],
+  .btn-primary,
+  .btn-secondary,
+  .btn-danger {
+    display: none;
+  }
+
+  .app-main {
+    padding: 0;
+    min-height: auto;
+  }
+
+  body {
+    background-color: white;
+  }
 }

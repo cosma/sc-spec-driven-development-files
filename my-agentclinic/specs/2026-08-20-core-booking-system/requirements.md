@@ -56,8 +56,9 @@ Deliver a functional booking system allowing AI agents to discover wellness ther
 ### NFR1: Technology Stack
 - **Backend**: Node.js + Express.js + TypeScript
 - **Database**: PostgreSQL with Prisma ORM
-- **Frontend**: Server-side rendered with EJS + TailwindCSS
-- **Testing**: Jest for unit and integration tests
+- **Frontend**: Server-side rendered HTML5 + vanilla JavaScript
+- **Styling**: TailwindCSS + custom responsive CSS framework
+- **Testing**: Vitest for unit and integration tests
 - **Code Quality**: ESLint + Prettier
 
 ### NFR2: Type Safety
@@ -83,6 +84,16 @@ Deliver a functional booking system allowing AI agents to discover wellness ther
 - Authentication required for agent-specific endpoints
 - Basic RBAC for agent vs. staff roles
 - Environment variables for sensitive config
+
+### NFR6: Responsive Web Design
+- Mobile-first approach with progressive enhancement
+- Breakpoints: Mobile (320px), Tablet (768px), Desktop (1024px+)
+- Touch-friendly UI on mobile devices (minimum 44px tap targets)
+- Viewport meta tag for proper mobile rendering
+- Flexible layouts using CSS Grid and Flexbox
+- Readable typography across all screen sizes
+- Fast load times and minimal data usage on mobile
+- Tested on: iPhone, iPad, Android devices, desktop browsers
 
 ---
 

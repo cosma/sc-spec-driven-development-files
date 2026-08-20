@@ -134,6 +134,132 @@
       color: rgba(255, 255, 255, 0.9);
       margin-bottom: 2rem;
     }
+
+    /* Responsive Design - Tablet */
+    @media (max-width: 768px) {
+      .hero {
+        padding: 3rem 1rem;
+      }
+
+      .hero h2 {
+        font-size: 2rem;
+      }
+
+      .hero p {
+        font-size: 1rem;
+      }
+
+      .hero-cta {
+        flex-direction: column;
+      }
+
+      .hero-cta a {
+        width: 100%;
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .mission-section {
+        padding: 2.5rem 1rem;
+      }
+
+      .therapies-section {
+        padding: 2.5rem 1rem;
+      }
+
+      .therapy-grid {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      }
+
+      .therapy-card {
+        padding: 1.5rem;
+      }
+
+      .cta-section {
+        padding: 2.5rem 1rem;
+      }
+    }
+
+    /* Responsive Design - Mobile */
+    @media (max-width: 480px) {
+      .hero {
+        padding: 2rem 0.75rem;
+      }
+
+      .hero h2 {
+        font-size: 1.5rem;
+      }
+
+      .hero p {
+        font-size: 0.95rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .hero-cta {
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+
+      .hero-cta a {
+        padding: 0.75rem 1rem;
+        min-height: 44px;
+        font-size: 0.95rem;
+      }
+
+      .mission-section {
+        padding: 2rem 0.75rem;
+      }
+
+      .mission-grid {
+        gap: 1.5rem;
+      }
+
+      .mission-icon {
+        font-size: 2rem;
+      }
+
+      .therapies-section {
+        padding: 2rem 0.75rem;
+      }
+
+      .therapy-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+      }
+
+      .therapy-card {
+        padding: 1.25rem;
+      }
+
+      .therapy-card h4 {
+        font-size: 1.1rem;
+      }
+
+      .therapy-tags {
+        font-size: 0.8rem;
+      }
+
+      .cta-section {
+        padding: 2rem 0.75rem;
+      }
+
+      .cta-section h3 {
+        font-size: 1.25rem;
+      }
+
+      .cta-section p {
+        font-size: 0.95rem;
+      }
+
+      .cta-section a {
+        min-height: 44px;
+        display: inline-flex;
+        align-items: center;
+        font-size: 0.95rem;
+      }
+    }
   </style>
 </head>
 <body>

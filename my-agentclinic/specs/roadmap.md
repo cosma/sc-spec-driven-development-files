@@ -96,5 +96,5 @@
 
 ## Development Approach
 - **Iteration**: Complete one phase fully before moving to the next
-- **Testing**: Unit + integration tests for each phase
+- **Testing**: Unit + integration tests for each phase using Vitest
 - **Review**: Align with stakeholders after each phase

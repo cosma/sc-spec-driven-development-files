@@ -58,6 +58,78 @@
     .demo-box p {
       margin: 0.25rem 0;
     }
+
+    /* Responsive Design - Tablet and below */
+    @media (max-width: 768px) {
+      .login-container {
+        padding: 1.5rem;
+        min-height: auto;
+      }
+
+      .login-card {
+        padding: 1.5rem;
+      }
+
+      .login-header h1 {
+        font-size: 1.5rem;
+      }
+
+      .login-header h2 {
+        font-size: 1.125rem;
+      }
+    }
+
+    /* Responsive Design - Mobile */
+    @media (max-width: 480px) {
+      .login-container {
+        padding: 1rem;
+      }
+
+      .login-card {
+        padding: 1.25rem;
+        max-width: 100%;
+      }
+
+      .login-header {
+        margin-bottom: 1.5rem;
+      }
+
+      .login-header h1 {
+        font-size: 1.25rem;
+      }
+
+      .login-header h2 {
+        font-size: 1rem;
+      }
+
+      .login-form {
+        gap: 1rem;
+      }
+
+      .form-group {
+        margin-bottom: 1rem;
+      }
+
+      .form-group input {
+        min-height: 44px;
+        font-size: 1rem;
+      }
+
+      button[type="submit"] {
+        min-height: 44px;
+        font-size: 1rem;
+      }
+
+      .demo-box {
+        padding: 0.75rem;
+        font-size: 0.8rem;
+        margin-top: 0.75rem;
+      }
+
+      .demo-box p {
+        margin: 0.2rem 0;
+      }
+    }
   </style>
 </head>
 <body>

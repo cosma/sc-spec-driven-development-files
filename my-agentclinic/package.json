@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "node src/index.js",
     "start": "node src/index.js",
-    "seed": "node src/seed.js"
+    "seed": "node src/seed.js",
+    "test": "vitest"
   },
   "dependencies": {
     "express": "4.17.1",
@@ -23,7 +24,9 @@
     "@types/cors": "2.8.6",
     "@types/jsonwebtoken": "8.5.1",
     "@types/bcryptjs": "2.4.2",
-    "typescript": "3.9.5"
+    "typescript": "3.9.5",
+    "vitest": "^1.0.0",
+    "supertest": "^6.3.0"
   },
   "private": true
 }

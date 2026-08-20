@@ -72,10 +72,23 @@ Test the complete user journey:
 - [ ] No hardcoded secrets or credentials in code
 - [ ] Environment variables documented in `.env.example`
 
+### AC7.5: Responsive Web Design
+- [ ] All pages render correctly on mobile devices (320px width)
+- [ ] All pages render correctly on tablets (768px width)
+- [ ] All pages render correctly on desktops (1024px+ width)
+- [ ] Navigation is touch-friendly on mobile (44px+ tap targets)
+- [ ] No horizontal scrolling on mobile or tablet
+- [ ] Typography scales appropriately for screen size
+- [ ] Images are responsive and don't overflow containers
+- [ ] Forms are usable on all screen sizes
+- [ ] Dashboard tabs are accessible on mobile
+- [ ] Booking modal works on small screens
+- [ ] Appointment list is readable on mobile
+
 ### AC8: Testing
-- [ ] Unit tests cover API endpoints (GET/POST logic)
-- [ ] Integration tests cover happy-path workflows (including home page, registration, login, booking)
-- [ ] Test suite runs with `npm test` and passes
+- [ ] Unit tests cover API endpoints (GET/POST logic) using Vitest
+- [ ] Integration tests cover happy-path workflows (including home page, registration, login, booking) using Vitest
+- [ ] Test suite runs with `npm test` via Vitest and passes
 - [ ] Code coverage ≥70% for critical paths (auth, booking, listing, home page)
 
 ### AC9: Documentation

@@ -15,14 +15,18 @@
 - **ORM**: Prisma (TypeScript-first, excellent DX)
 
 ## Frontend
-- **Technology**: Server-side rendered initially (could add React later if needed)
-- **Templating**: EJS or Handlebars for initial dashboards
-- **CSS**: TailwindCSS for modern, attractive design (Steve's requirement)
+- **Technology**: Server-side rendered HTML5 with vanilla JavaScript
+- **CSS**: TailwindCSS + custom responsive CSS framework
+- **Responsive Design**: Mobile-first approach with breakpoints:
+  - Mobile: 320px - 767px
+  - Tablet: 768px - 1023px
+  - Desktop: 1024px+
+- **Design Principles**: Modern, accessible, device-agnostic (Steve's requirement)
 
 ## DevOps & Quality
 - **Linting**: ESLint
 - **Formatting**: Prettier
-- **Testing**: Jest for unit/integration tests
+- **Testing**: Vitest for unit/integration tests (blazing fast, TypeScript-first)
 - **Environment**: Docker-ready structure
 
 ## Rationale
